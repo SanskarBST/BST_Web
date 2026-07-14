@@ -1,0 +1,18 @@
+@keyframes codeScroll {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-code-scroll {
+  animation: codeScroll 25s linear infinite;
+}
+
+.mask-image-b {
+  mask-image: linear-gradient(to bottom, black 60%, transparent 95%);
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 95%);
+}
