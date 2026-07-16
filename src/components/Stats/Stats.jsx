@@ -1,14 +1,16 @@
+// File: src/components/Stats/Stats.jsx
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Naya Content Yahan Hai
 const statsData = [
-  { id: 1, value: "CMMI Level 4", label: "Certified Agency", icon: "🏆" },
-  { id: 2, value: "ISO 27001", label: "Security Certified", icon: "🔒" },
-  { id: 3, value: "48-Hour", label: "Developer Matching", icon: "⚡" },
-  { id: 4, value: "7-Day", label: "Risk-Free Trial", icon: "🛡️" }
+  { id: 1, value: "100+", label: "Projects Delivered", icon: "🚀" },
+  { id: 2, value: "50+", label: "Engineers", icon: "💻" },
+  { id: 3, value: "10+", label: "Countries", icon: "🌍" },
+  { id: 4, value: "95%", label: "Client Retention", icon: "📈" }
 ];
 
 export function Stats() {
@@ -18,7 +20,6 @@ export function Stats() {
     const ctx = gsap.context(() => {
       const cards = gsap.utils.toArray('.feature-box');
       
-      
       gsap.fromTo(cards, 
         { y: 50, opacity: 0 },
         { 
@@ -27,8 +28,8 @@ export function Stats() {
           duration: 0.8, 
           ease: 'power3.out',
           stagger: {
-            each: 0.2, // Time delay between pairs
-            grid: [2, 2], // 2 rows, 2 columns (animates 2 at once)
+            each: 0.2,
+            grid: [2, 2], 
             from: "start"
           },
           scrollTrigger: { 
