@@ -1,6 +1,6 @@
 import React from "react";
 import { useRef } from 'react';
-import { HeroCanvas } from './HeroCanvas';
+// 🔥 Yahan se HeroCanvas ka import hata diya hai
 import { HeroText } from './HeroText';
 import { ScrollTimeline } from './Effects/ScrollTimeline';
 
@@ -9,7 +9,7 @@ export function Hero() {
 
   return (
     <>
-      <HeroCanvas />
+      {/* 🔥 <HeroCanvas /> yahan se hata diya gaya hai kyunki wo App.jsx me set hai */}
       <div ref={scopeRef} className="relative z-10 pointer-events-none">
         <ScrollTimeline scopeRef={scopeRef} />
         <div id="animation-trigger" className="h-[300vh] w-full">

@@ -2,15 +2,18 @@
 import React from 'react';
 
 const companyLogos = [
-  { name: "Panasonic", url: "https://upload.wikimedia.org/wikipedia/commons/9/95/Panasonic_logo.svg" },
+  { name: "Panasonic", url: "https://upload.wikimedia.org/wikipedia/commons/5/54/Panasonic_Group_logo.svg" },
   { name: "Airtel", url: "https://upload.wikimedia.org/wikipedia/commons/f/fb/Bharti_Airtel_Logo.svg" },
   { name: "Dell", url: "https://upload.wikimedia.org/wikipedia/commons/1/18/Dell_logo_2016.svg" },
-  { name: "EY", url: "https://upload.wikimedia.org/wikipedia/commons/3/34/EY_logo_2019.svg" },
+  { name: "EY", url: "https://upload.wikimedia.org/wikipedia/commons/6/65/Ernst_%26_Young_logo_%282016%29.svg" },
   { name: "Godrej", url: "https://upload.wikimedia.org/wikipedia/commons/9/97/Godrej_Logo.svg" },
   { name: "Infosys", url: "https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg" },
   { name: "Gartner", url: "https://upload.wikimedia.org/wikipedia/commons/9/98/Gartner_logo.svg" },
   { name: "DXC", url: "https://upload.wikimedia.org/wikipedia/commons/8/88/DXC_Logo_2021_Purple_Black.png" },
   { name: "BlackRock", url: "https://upload.wikimedia.org/wikipedia/commons/8/85/BlackRock_wordmark.svg" },
+  //{ name: "Qualitest", url: "https://upload.wikimedia.org/wikipedia/commons/4/45/Qualitest_svg_logo.svg" },
+  { name: "HERE Technologies", url: "https://upload.wikimedia.org/wikipedia/commons/c/c7/HERE_logo.svg" },
+  { name: "goeasy", url: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Goeasy_logo.svg" },
 ];
 
 export function BrandLogos() {

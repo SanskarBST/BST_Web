@@ -1,4 +1,3 @@
-// File: src/components/Hero/HeroCanvas.jsx
 import React, { useMemo, useRef, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -133,7 +132,8 @@ function SmoothDust({ count, color, size, speed }) {
 export function HeroCanvas() {
   return (
     <div className="pointer-events-none fixed left-0 top-0 z-0 h-screen w-full bg-transparent">
-      <Canvas camera={{ position: [0, 0, 10], fov: 45 }} gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}>
+      {/* 🔥 FIX: alpha: true lagaya hai jisse Canvas ka kala background transparent ho jayega */}
+      <Canvas camera={{ position: [0, 0, 10], fov: 45 }} gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}>
         
         {/* WRAPPED THE ENTIRE SCENE IN PARALLAX RIG */}
         <ParallaxRig>

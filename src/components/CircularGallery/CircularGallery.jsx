@@ -215,7 +215,8 @@ class Media {
         void main() {
           vUv = uv;
           vec3 p = position;
-          p.z = (sin(p.x * 4.0 + uTime) * 1.5 + cos(p.y * 2.0 + uTime) * 1.5) * (0.1 + uSpeed * 0.5);
+          // 🔥 FIX: Warp effect ko soft kar diya (* 0.5)
+          p.z = (sin(p.x * 4.0 + uTime) * 0.5 + cos(p.y * 2.0 + uTime) * 0.5) * (0.1 + uSpeed * 0.2);
           gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
         }
       `,
@@ -299,7 +300,10 @@ class Media {
       }
     }
     this.speed = scroll.current - scroll.last;
-    this.program.uniforms.uTime.value += 0.04;
+    
+    // 🔥 FIX: Idle wave animation ki speed bohot slow kar di (0.015 instead of 0.04)
+    this.program.uniforms.uTime.value += 0.015; 
+    
     this.program.uniforms.uSpeed.value = this.speed;
     const planeOffset = this.plane.scale.x / 2;
     const viewportOffset = this.viewport.width / 2;
@@ -334,7 +338,7 @@ class Media {
 }
 
 class App {
-  constructor(container, { items, bend, textColor = '#ffffff', borderRadius = 0, font = 'bold 30px Figtree', scrollSpeed = 2, scrollEase = 0.05 } = {}) {
+  constructor(container, { items, bend, textColor = '#ffffff', borderRadius = 0, font = 'bold 30px Figtree', scrollSpeed = 0.4, scrollEase = 0.02 } = {}) {
     document.documentElement.classList.remove('no-js');
     this.container = container;
     this.scrollSpeed = scrollSpeed;
@@ -367,18 +371,14 @@ class App {
     this.planeGeometry = new Plane(this.gl, { heightSegments: 50, widthSegments: 100 });
   }
   createMedias(items, bend = 1, textColor, borderRadius, font) {
+    // If no items provided, default fallback
     const defaultItems = [
-      { image: `https://picsum.photos/seed/1/800/600?grayscale`, text: 'Bridge' },
-      { image: `https://picsum.photos/seed/2/800/600?grayscale`, text: 'Desk Setup' },
-      { image: `https://picsum.photos/seed/3/800/600?grayscale`, text: 'Waterfall' },
-      { image: `https://picsum.photos/seed/4/800/600?grayscale`, text: 'Strawberries' },
-      { image: `https://picsum.photos/seed/5/800/600?grayscale`, text: 'Deep Diving' },
-      { image: `https://picsum.photos/seed/16/800/600?grayscale`, text: 'Train Track' },
-      { image: `https://picsum.photos/seed/17/800/600?grayscale`, text: 'Santorini' },
-      { image: `https://picsum.photos/seed/8/800/600?grayscale`, text: 'Blurry Lights' }
+      { image: `https://picsum.photos/seed/ai/800/600?grayscale`, text: 'AI Engineering' },
+      { image: `https://picsum.photos/seed/web/800/600?grayscale`, text: 'Software Dev' },
+      { image: `https://picsum.photos/seed/staff/800/600?grayscale`, text: 'Staff Augmentation' }
     ];
     const galleryItems = items && items.length ? items : defaultItems;
-    this.mediasImages = galleryItems.concat(galleryItems);
+    this.mediasImages = galleryItems.concat(galleryItems); 
     this.medias = this.mediasImages.map((data, index) => {
       return new Media({
         geometry: this.planeGeometry, gl: this.gl, image: data.image, index, length: this.mediasImages.length,
@@ -387,6 +387,16 @@ class App {
       });
     });
   }
+
+  scrollNext() {
+    if (!this.medias || !this.medias[0]) return;
+    this.scroll.target += this.medias[0].width;
+  }
+  scrollPrev() {
+    if (!this.medias || !this.medias[0]) return;
+    this.scroll.target -= this.medias[0].width;
+  }
+
   onTouchDown(e) {
     this.isDown = true;
     this.scroll.position = this.scroll.current;
@@ -495,29 +505,56 @@ class App {
   }
 }
 
-export default function CircularGallery({ items, bend = 3, textColor = '#ffffff', borderRadius = 0.05, font = 'bold 30px Figtree', fontUrl, scrollSpeed = 2, scrollEase = 0.05 }) {
+// 🔥 Updated Params (bend = 1.8 for more roundness, scrollSpeed = 0.4 for smooth slow scroll)
+export default function CircularGallery({ 
+  items, 
+  bend = 1.8, 
+  textColor = '#ffffff', 
+  borderRadius = 0.05, 
+  font = 'bold 30px Figtree', 
+  fontUrl, 
+  scrollSpeed = 0.4, 
+  scrollEase = 0.02 
+}) {
   const containerRef = useRef(null);
+  const appRef = useRef(null); 
+
   useEffect(() => {
     if (!containerRef.current) return;
-    let app;
     let isMounted = true;
     resolveFont(font, fontUrl).then(resolvedFont => {
       if (!isMounted || !containerRef.current) return;
-      app = new App(containerRef.current, { items, bend, textColor, borderRadius, font: resolvedFont, scrollSpeed, scrollEase });
+      appRef.current = new App(containerRef.current, { items, bend, textColor, borderRadius, font: resolvedFont, scrollSpeed, scrollEase });
     });
     return () => {
       isMounted = false;
-      if (app) app.destroy();
+      if (appRef.current) appRef.current.destroy();
     };
   }, [items, bend, textColor, borderRadius, font, fontUrl, scrollSpeed, scrollEase]);
 
   return (
-    <div
-      className="circular-gallery"
-      ref={containerRef}
-      tabIndex={0}
-      role="region"
-      aria-label="Circular image gallery. Use left and right arrow keys to navigate."
-    />
+    <div className="relative w-full h-[600px] overflow-hidden bg-transparent group">
+      <div
+        className="circular-gallery absolute inset-0 w-full h-full outline-none cursor-grab active:cursor-grabbing"
+        ref={containerRef}
+        tabIndex={0}
+        role="region"
+        aria-label="Circular services gallery."
+      />
+      
+      <button 
+        onClick={() => appRef.current?.scrollPrev()} 
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 border border-white/10 hover:border-[#FF2E2B] text-white hover:text-[#FF2E2B] transition-all backdrop-blur-sm opacity-0 group-hover:opacity-100"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+      </button>
+
+      <button 
+        onClick={() => appRef.current?.scrollNext()} 
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-black/60 border border-white/10 hover:border-[#FF2E2B] text-white hover:text-[#FF2E2B] transition-all backdrop-blur-sm opacity-0 group-hover:opacity-100"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+      </button>
+    </div>
   );
 }
